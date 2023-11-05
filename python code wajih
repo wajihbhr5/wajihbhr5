@@ -1,0 +1,102 @@
+import re
+import random
+
+# Fonction pour enregistrer un utilisateur
+def enregistrer_utilisateur():
+    email = input("Entrez votre adresse email : ")
+    while not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        email = input("Email invalide. Réessayez : ")
+
+    mdp = input("Entrez votre mot de passe (8 caractères, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial) : ")
+    while not (
+        len(mdp) == 8
+        and any(c.isupper() for c in mdp)
+        and any(c.islower() for c in mdp)
+        and any(c.isdigit() for c in mdp)
+        and any(not c.isalnum() for c in mdp)
+    ):
+        mdp = input("Mot de passe invalide. Réessayez : ")
+
+    with open("Enregistrement.txt", "a") as fichier:
+        fichier.write(f"Email : {email}, Mot de passe : {mdp}\n")
+    print("Enregistrement réussi !")
+
+# Fonction pour l'authentification
+def authentifier():
+    email = input("Email : ")
+    mdp = input("Mot de passe : ")
+
+    with open("Enregistrement.txt", "r") as fichier:
+        for ligne in fichier:
+            if f"Email : {email}, Mot de passe : {mdp}\n" == ligne:
+                return True
+    return False
+
+# Fonction pour jouer à la roulette
+def jouer_roulette(jetons):
+    print("Vous jouez à la roulette !")
+    while jetons > 0:
+        print(f"Vous avez actuellement {jetons} jetons.")
+
+        # Demandez au joueur de placer un pari
+        mise = int(input("Combien de jetons souhaitez-vous miser (0 pour quitter) ? "))
+        if mise == 0:
+            print("Merci d'avoir joué à la roulette")
+            break
+
+        numero_choisi = int(input("Choisissez un numéro entre 0 et 36 sur lequel parier : "))
+        numero_gagnant = random.randint(0, 36)
+
+        print(f"La roulette s'arrête sur le numéro {numero_gagnant}.")
+
+        if numero_choisi == numero_gagnant:
+            gain = mise * 36
+            jetons += gain
+            print(f"Félicitations ! Vous avez gagné {gain} jetons.")
+        else:
+            jetons -= mise
+            print("Dommage, vous avez perdu votre mise.")
+
+    return jetons
+
+# Fonction pour un chiffrement César simplifié
+def chiffrement_cesar(texte, decalage):
+    texte_chiffre = ''.join(
+        chr(((ord(caractere) - 65 + decalage) % 26) + 65) if 'A' <= caractere <= 'Z' else caractere
+        for caractere in texte.upper()
+    )
+    print("Texte chiffré : ", texte_chiffre)
+
+# Programme principal
+jetons = 100
+
+while True:
+    print("1- Enregistrement")
+    print("2- Authentification")
+    choix = input("Faites votre choix (1/2 ou Q pour quitter) : ")
+
+    if choix == "1":
+        enregistrer_utilisateur()
+    elif choix == "2":
+        if authentifier():
+            print("Authentification réussie !")
+            while True:
+                print("A- Jouer à la Roulette")
+                print("B- Chiffrement César")
+                sous_choix = input("Faites votre choix (A/B ou Q pour quitter) : ")
+                if sous_choix == "A":
+                    jetons = jouer_roulette(jetons)
+                elif sous_choix == "B":
+                    texte = input("Entrez le texte à chiffrer : ")
+                    decalage = int(input("Entrez la valeur de décalage : "))
+                    chiffrement_cesar(texte, decalage)
+                elif sous_choix == "00":
+                    break
+                else:
+                    print("Choix invalide. Réessayez.")
+        else:
+            print("Authentification échouée. Veuillez vous enregistrer d'abord.")
+    elif choix == "00":
+        break
+    else:
+        print("Choix invalide. Réessayez.")
