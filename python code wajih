@@ -73,7 +73,7 @@ jetons = 100
 while True:
     print("1- Enregistrement")
     print("2- Authentification")
-    choix = input("Faites votre choix (1/2 ou Q pour quitter) : ")
+    choix = input("Faites votre choix (1/2 ou 00 pour quitter) : ")
 
     if choix == "1":
         enregistrer_utilisateur()
@@ -83,7 +83,7 @@ while True:
             while True:
                 print("A- Jouer à la Roulette")
                 print("B- Chiffrement César")
-                sous_choix = input("Faites votre choix (A/B ou Q pour quitter) : ")
+                sous_choix = input("Faites votre choix (A/B ou 00 pour quitter) : ")
                 if sous_choix == "A":
                     jetons = jouer_roulette(jetons)
                 elif sous_choix == "B":
